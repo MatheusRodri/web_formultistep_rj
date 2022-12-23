@@ -7,9 +7,25 @@ import { Thanks } from "./components/Thanks";
 
 //Hooks
 import { useForm } from "./hooks/useForm";
+import { Steps } from "./components/Steps";
+import { useState } from "react";
+
+
+const formTemplate = {
+  name: "",
+  email: "",
+  review: "",
+  comment: "",
+}
 
 function App() {
-  const formComponents = [<UseForm />, <ReviewForm />, <Thanks />];
+  const [data,setData] = useState(formTemplate)
+  const updateFiledHandler = (key,value)=>{
+    setData((prev)=>{
+      return {...prev,[key]:value}
+    })
+  }
+  const formComponents = [<UseForm data={data} updateFiledHandler={updateFiledHandler}/>, <ReviewForm data={data} updateFiledHandler={updateFiledHandler} />, <Thanks data={data} />];
 
   const { currentStep, currentComponent, changeStep, isLastStep, isFirstStep } =
     useForm(formComponents);
@@ -21,7 +37,7 @@ function App() {
         <p>Ficamos felizes com sua compra, utilize o formulario abaixo:</p>
       </div>
       <div className="form-container">
-        <p>etapas</p>
+        <Steps currentStep={currentStep}/>
         <form onSubmit={(e) => changeStep(currentStep + 1, e)}>
           <div className="inputs-container">{currentComponent}</div>
           <div className="actions">
